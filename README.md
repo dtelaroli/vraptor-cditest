@@ -1,13 +1,13 @@
 vraptor-cditest
 ===============
 
-Projet of tests for Vraptor4 with CDI
+Testing API for Vraptor4 with CDI
 
 ### Dependencies
 
-This project is an wrap of [this project](http://jglue.org/cdi-unit-user-guide/). All features can be used.
+This project is a wrap of [this project](http://jglue.org/cdi-unit-user-guide/). All features can be used.
 
-#### Adding the CdiTest to your project
+#### Adding the CdiTest for your project
 
 ```
 <dependency>
@@ -33,12 +33,12 @@ Now, your application it's able to use @Inject annotation.
 
 ### Jpa class
 
-The Jpa Class is an wrap of VRaptor JPA Plugin. 
+The Jpa Class is a wrap of VRaptor JPA Plugin. 
 It's injected in the Db Class and can be returned by the method Db#jpa() or the EntityManager directly by the Db#em();
 
 #### Configuration
 
-Create a persistence file like [this file](https://github.com/dtelaroli/vraptor-cditest/blob/master/src/test/resources/META-INF/persistence.xml) on the src/test/resources/META-INF folder. The default persistence unit name is 'default'. 
+Create a persistence file like [this file](https://github.com/dtelaroli/vraptor-cditest/blob/master/src/test/resources/META-INF/persistence.xml) on the src/test/resources/META-INF folder. The default persistence unit is called 'default'. 
 Create a properties like [this file](https://github.com/dtelaroli/vraptor-cditest/blob/master/src/test/resources/development.properties) on the src/test/resources folder to change the default name.
 
 #### Usage
@@ -72,7 +72,7 @@ Connection Jpa#getConnection() //JDBC Connection
 
 ### Db class
 
-The Db Class is an wrap of DbUnit. It have features to open a connection and prepare data to your tests.
+The Db Class is a wrap of DbUnit. It has features to open a connection and prepare the data for your tests.
 
 #### Configuration
 
@@ -81,7 +81,7 @@ Create the xml like [this file](https://github.com/dtelaroli/vraptor-cditest/blo
 Model: Entity Class Name
 name: Name property in the Entity Model
 
-Each Model xml node it a line inserted on the database.
+Each Model xml node is a line inserted on the database.
 
 ```
 @RunWith(CdiRunner.class)
@@ -103,4 +103,4 @@ EntityManager Db#em()
 
 ### Logging
 
-[Exemple](https://github.com/dtelaroli/vraptor-cditest/blob/master/src/test/resources/log4j.xml)
+[Example](https://github.com/dtelaroli/vraptor-cditest/blob/master/src/test/resources/log4j.xml)

@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>cdi</name>
+	<name>cdi-test</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -20,13 +20,13 @@
 			<groupId>br.com.caelum</groupId>
 			<artifactId>vraptor</artifactId>
 			<version>${version.vraptor}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>br.com.caelum.vraptor</groupId>
 			<artifactId>vraptor-jpa</artifactId>
 			<version>${version.vraptor}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jglue.cdi-unit</groupId>
@@ -40,17 +40,16 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>dbunit</groupId>
+			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
 			<version>2.2</version>
-			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>4.3.0.Final</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
