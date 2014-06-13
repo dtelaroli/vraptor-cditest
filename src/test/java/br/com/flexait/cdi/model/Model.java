@@ -1,4 +1,4 @@
-package org.dtelaroli.cdi.model;
+package br.com.flexait.cdi.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

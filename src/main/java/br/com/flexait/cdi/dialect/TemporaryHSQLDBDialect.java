@@ -1,4 +1,4 @@
-package org.dtelaroli.cdi.dialect;
+package br.com.flexait.cdi.dialect;
 
 import org.hibernate.dialect.HSQLDialect;
 

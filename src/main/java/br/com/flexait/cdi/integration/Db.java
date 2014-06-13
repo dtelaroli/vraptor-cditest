@@ -1,4 +1,4 @@
-package org.dtelaroli.cdi.integration;
+package br.com.flexait.cdi.integration;
 
 import java.io.FileInputStream;
 

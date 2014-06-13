@@ -1,4 +1,4 @@
-package org.dtelaroli.cdi.integration;
+package br.com.flexait.cdi.integration;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -15,6 +15,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import br.com.flexait.cdi.integration.Jpa;
 
 @RunWith(CdiRunner.class)
 public class JpaTest {

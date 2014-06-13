@@ -1,4 +1,4 @@
-package org.dtelaroli.cdi.integration;
+package br.com.flexait.cdi.integration;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -10,13 +10,16 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.dtelaroli.cdi.model.Model;
 import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.ContextController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import br.com.flexait.cdi.integration.Db;
+import br.com.flexait.cdi.integration.Jpa;
+import br.com.flexait.cdi.model.Model;
 
 @RunWith(CdiRunner.class)
 public class DbTest {
