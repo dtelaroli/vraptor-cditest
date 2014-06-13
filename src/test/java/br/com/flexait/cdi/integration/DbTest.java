@@ -67,4 +67,9 @@ public class DbTest {
 		list = query.getResultList();
 		assertThat(list.size(), equalTo(0));
 	}
+	
+	@Test
+	public void shouldReturnEntityManagerFromJpa() {
+		assertThat(db.em(), instanceOf(EntityManager.class));
+	}
 }

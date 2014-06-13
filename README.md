@@ -23,7 +23,8 @@ Now, your application it's able to use @Inject annotation.
 
 ### Jpa class
 
-The Jpa Class is an wrap of VRaptor JPA Plugin. It's injected in the Db Class and can be returned by the method Db#jpa();
+The Jpa Class is an wrap of VRaptor JPA Plugin. 
+It's injected in the Db Class and can be returned by the method Db#jpa() or the EntityManager directly by the Db#em();
 
 #### Configuration
 
@@ -46,8 +47,21 @@ public class YourTest {
 ```
 ### Db class
 
+#### Configuration
 The Db Class is an wrap of DbUnit. It have features to open a connection and prepare data to your tests.
 
 ```
 
+```
+@RunWith(CdiRunner.class)
+public class YourTest {
+
+	@Inject Jpa jpa;
+	
+	public void yourAssert() {
+		EntityManager em = jpa.em();
+		...
+	}
+}
+```
 ```

@@ -3,6 +3,7 @@ package br.com.flexait.cdi.integration;
 import java.io.FileInputStream;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -57,6 +58,10 @@ public class Db {
 
 	public void clean() throws Exception {
 		DatabaseOperation.DELETE_ALL.execute(connection, dataSet);
+	}
+
+	public EntityManager em() {
+		return jpa.em();
 	}
 	
 }
