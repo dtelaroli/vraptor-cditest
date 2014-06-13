@@ -4,9 +4,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 
-import org.dtelaroli.cdi.integration.Jpa;
 import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.ContextController;
 import org.junit.After;
@@ -37,32 +39,32 @@ public class JpaTest {
 	
 	@Test
 	public void shouldBeOpenEntityManager() {
-		assertThat(jpa.getEntityManager(), notNullValue());
-		assertThat(jpa.getEntityManager().isOpen(), equalTo(true));
+		assertThat(jpa.em(), notNullValue());
+		assertThat(jpa.em().isOpen(), equalTo(true));
 	}
 	
 	@Test
 	public void shouldOpenTransaction() {
 		jpa.begin();
-		assertThat(jpa.getEntityManager().isJoinedToTransaction(), equalTo(true));
+		assertThat(jpa.em().isJoinedToTransaction(), equalTo(true));
 	}
 	
 	@Test
 	public void shouldCommitTransaction() {
 		jpa.begin();
-		assertThat(jpa.getEntityManager().getTransaction().isActive(), equalTo(true));
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(true));
 		
 		jpa.commit();		
-		assertThat(jpa.getEntityManager().getTransaction().isActive(), equalTo(false));
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(false));
 	}
 	
 	@Test
 	public void shouldRollbackTransaction() {
 		jpa.begin();
-		assertThat(jpa.getEntityManager().getTransaction().isActive(), equalTo(true));
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(true));
 		
 		jpa.rollback();		
-		assertThat(jpa.getEntityManager().getTransaction().isActive(), equalTo(false));
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(false));
 	}
 	
 	@Test
@@ -87,9 +89,17 @@ public class JpaTest {
 	
 	@Test
 	public void shouldReturnFalseIfConnectionOpen() {
-		jpa.getEntityManager().close();
+		jpa.em().close();
 		
 		assertThat(jpa.isOpen(), equalTo(false));
+	}
+	
+	@Test
+	public void shouldReturnUnwrappedConnection() throws SQLException {
+		Connection conn = jpa.getConnection();
+		
+		assertThat(conn.isClosed(), equalTo(false));
+		conn.close();
 	}
 	
 }
