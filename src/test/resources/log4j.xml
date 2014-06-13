@@ -9,15 +9,11 @@
 	</appender>
 
 	<category name="br.com.caelum">
-		<priority value="DEBUG" />
+		<priority value="INFO" />
 		<appender-ref ref="stdout" />
 	</category>
 
 	<category name="org.hibernate">
-		<priority value="INFO" />
-		<appender-ref ref="stdout" />
-	</category>
-	<category name="org.hibernate.SQL">
 		<priority value="INFO" />
 		<appender-ref ref="stdout" />
 	</category>

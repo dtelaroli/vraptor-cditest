@@ -40,7 +40,7 @@ public class Db {
 		return dataSet;
 	}
 	
-	private String getDataSetName() {
+	protected String getDataSetName() {
 		return RESOURCES_DATASETS + dataSetName + ".xml";
 	}
 	
