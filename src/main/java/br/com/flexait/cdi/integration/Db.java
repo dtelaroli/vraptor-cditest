@@ -23,14 +23,21 @@ public class Db {
 	private IDatabaseConnection connection;
 
 	@SuppressWarnings("rawtypes")
-	public void init(Class class1) throws Exception {
-		dataSetName = class1.getSimpleName();
+	public void init(Class... clazz) throws Exception {
+		for (Class c : clazz) {
+			initOne(c);
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private void initOne(Class c) throws Exception {
+		dataSetName = c.getSimpleName();
 		
 		dataSet = getDataSet();
 		connection = getConnection();
 		DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 	}
-	
+
 	protected IDataSet getDataSet() throws Exception {
 		if(dataSet == null) {
 			FileInputStream fileInputStream = new FileInputStream(getDataSetName());

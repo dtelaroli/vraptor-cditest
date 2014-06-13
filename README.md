@@ -90,7 +90,7 @@ public class YourTest {
 	@Inject Db db;
 	
 	public void yourAssert() {
-		db.init(YouModel.class);
+		db.init(YouModel.class, YouModel2.class);
 		...
 	}
 }
