@@ -24,6 +24,7 @@ public class Db {
 
 	@SuppressWarnings("rawtypes")
 	public void init(Class... clazz) throws Exception {
+		begin();
 		for (Class c : clazz) {
 			initOne(c);
 		}
@@ -71,4 +72,15 @@ public class Db {
 		return jpa.em();
 	}
 	
+	public EntityManager begin() {
+		return jpa.begin();
+	}
+	
+	public void commit() {
+		jpa.commit();
+	}
+	
+	public void rollback() {
+		jpa.rollback();
+	}
 }
