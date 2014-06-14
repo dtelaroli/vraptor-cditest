@@ -2,6 +2,7 @@ package br.com.flexait.cdi.integration;
 
 import java.io.FileInputStream;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
@@ -11,12 +12,17 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 
+@ApplicationScoped
 public class Db {
 
 	private static final String RESOURCES_DATASETS = "src/test/resources/datasets/";
 
 	private String dataSetName;
 	@Inject private Jpa jpa;
+
+	@Deprecated //cdi only
+	public Db() {
+	}
 
 	private IDataSet dataSet;
 
@@ -35,7 +41,7 @@ public class Db {
 		
 		dataSet = getDataSet();
 		connection = getConnection();
-		DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+		DatabaseOperation.INSERT.execute(connection, dataSet);
 	}
 
 	protected IDataSet getDataSet() throws Exception {

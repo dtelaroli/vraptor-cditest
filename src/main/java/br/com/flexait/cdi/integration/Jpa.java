@@ -3,6 +3,7 @@ package br.com.flexait.cdi.integration;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -16,6 +17,7 @@ import br.com.caelum.vraptor.jpa.EntityManagerCreator;
 import br.com.caelum.vraptor.jpa.EntityManagerFactoryCreator;
 
 @AdditionalClasses({EntityManagerCreator.class, EntityManagerFactoryCreator.class, ServletBasedEnvironment.class})
+@ApplicationScoped
 public class Jpa {
 
 	@Inject private EntityManager em;
