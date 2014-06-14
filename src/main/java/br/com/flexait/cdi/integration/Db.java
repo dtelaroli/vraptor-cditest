@@ -24,7 +24,6 @@ public class Db {
 
 	@SuppressWarnings("rawtypes")
 	public void init(Class... clazz) throws Exception {
-		begin();
 		for (Class c : clazz) {
 			initOne(c);
 		}
