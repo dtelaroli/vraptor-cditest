@@ -4,13 +4,13 @@ import java.io.FileInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.jglue.cdiunit.ContextController;
 
 @ApplicationScoped
 public class Db {
@@ -19,19 +19,34 @@ public class Db {
 
 	private String dataSetName;
 	@Inject private Jpa jpa;
+	@Inject ContextController ctx;
 
 	@Deprecated //cdi only
 	public Db() {
 	}
-
+	
 	private IDataSet dataSet;
 
 	private IDatabaseConnection connection;
 
+	private boolean implicitRequest = true;
+
 	@SuppressWarnings("rawtypes")
 	public void init(Class... clazz) throws Exception {
+		if(implicitRequest) {
+			ctx.openRequest();
+		}
+		
 		for (Class c : clazz) {
 			initOne(c);
+		}
+	}
+	
+	public void clean() throws Exception {
+		DatabaseOperation.DELETE_ALL.execute(connection, dataSet);
+		
+		if(implicitRequest) {
+			ctx.closeRequest();
 		}
 	}
 	
@@ -65,27 +80,18 @@ public class Db {
 		return connection;
 	}
 
-	public Jpa jpa() {
+
+	protected Jpa jpa() {
 		return jpa;
 	}
 
-	public void clean() throws Exception {
-		DatabaseOperation.DELETE_ALL.execute(connection, dataSet);
+	public ContextController ctx() {
+		return ctx;
 	}
 
-	public EntityManager em() {
-		return jpa.em();
+	public Db withoutImplicitRequest() {
+		implicitRequest = false;
+		return this;
 	}
-	
-	public EntityManager begin() {
-		return jpa.begin();
-	}
-	
-	public void commit() {
-		jpa.commit();
-	}
-	
-	public void rollback() {
-		jpa.rollback();
-	}
+
 }

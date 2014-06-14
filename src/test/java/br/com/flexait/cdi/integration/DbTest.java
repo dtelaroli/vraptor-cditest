@@ -12,52 +12,56 @@ import javax.persistence.Query;
 
 import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.ContextController;
-import org.junit.After;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import br.com.flexait.cdi.integration.Db;
-import br.com.flexait.cdi.integration.Jpa;
 import br.com.flexait.cdi.model.Model;
 
 @RunWith(CdiRunner.class)
 public class DbTest {
 
-	@Inject ContextController ctx;
 	@Inject Db db;
-	
-	@Before
-	public void setUp() throws Exception {
-		ctx.openRequest();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		ctx.closeRequest();
-	}
+	@Inject Jpa jpa;
 	
 	@Test
 	public void shouldInjectJpa() {
 		assertThat(db.jpa(), instanceOf(Jpa.class));
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Test
+	public void shouldInjectContextController() {
+		assertThat(db.ctx(), instanceOf(ContextController.class));
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldEvictOpenRequest() throws Exception {
+		db.withoutImplicitRequest().init(Model.class);
+		db.ctx().currentRequest();
+	}
+	
+	@Test @InRequestScope
+	public void shouldOpenRequest() throws Exception {
+		db.withoutImplicitRequest().init(Model.class);
+		db.ctx().currentRequest();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Test @InRequestScope
 	public void shouldGenerateDataByModelNameAndDataSource() throws Exception {
-		db.init(Model.class);
+		db.withoutImplicitRequest().init(Model.class);
 		
-		Query query = db.jpa().em().createQuery("FROM Model");
+		Query query = jpa.em().createQuery("FROM Model");
 		List list = query.getResultList();
 		assertThat(list.size(), equalTo(2));
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@Test
+	@Test @InRequestScope
 	public void shouldCleanDataBase() throws Exception {
-		db.init(Model.class);
+		db.withoutImplicitRequest().init(Model.class);
 		
-		EntityManager em = db.jpa().em();
+		EntityManager em = jpa.em();
 		Query query = em.createQuery("FROM Model");
 		List list = query.getResultList();
 		assertThat(list.size(), equalTo(2));
@@ -68,8 +72,4 @@ public class DbTest {
 		assertThat(list.size(), equalTo(0));
 	}
 	
-	@Test
-	public void shouldReturnEntityManagerFromJpa() {
-		assertThat(db.em(), instanceOf(EntityManager.class));
-	}
 }
