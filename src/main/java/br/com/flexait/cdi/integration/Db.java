@@ -19,9 +19,11 @@ public class Db {
 
 	private String dataSetName;
 	@Inject private Jpa jpa;
-	@Inject ContextController ctx;
+	@Inject private ContextController ctx;
 
-	@Deprecated //cdi only
+	/**
+	 * @deprecated CDI eyes only
+	 */
 	public Db() {
 	}
 	

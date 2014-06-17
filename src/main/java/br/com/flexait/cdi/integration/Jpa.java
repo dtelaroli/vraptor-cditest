@@ -16,8 +16,8 @@ import br.com.caelum.vraptor.environment.ServletBasedEnvironment;
 import br.com.caelum.vraptor.jpa.EntityManagerCreator;
 import br.com.caelum.vraptor.jpa.EntityManagerFactoryCreator;
 
-@AdditionalClasses({EntityManagerCreator.class, EntityManagerFactoryCreator.class, ServletBasedEnvironment.class})
 @ApplicationScoped
+@AdditionalClasses({EntityManagerCreator.class, EntityManagerFactoryCreator.class, ServletBasedEnvironment.class})
 public class Jpa {
 
 	@Inject private EntityManager em;
@@ -34,10 +34,10 @@ public class Jpa {
 
 	public EntityManager begin() {
 		if(tx == null) {
-			tx = em.getTransaction();
+			tx = em().getTransaction();
 		}
 		tx.begin();
-		return em;
+		return em();
 	}
 
 	public void commit() {
@@ -53,11 +53,11 @@ public class Jpa {
 	}
 
 	public boolean isOpen() {
-		return em.isOpen();
+		return em().isOpen();
 	}
 
 	public Connection getConnection() throws SQLException {
-		doWork((Session) em.getDelegate());
+		doWork((Session) em().getDelegate());
 		return conn;
 	}
 
