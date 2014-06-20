@@ -12,7 +12,8 @@ import javax.persistence.Query;
 
 import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.ContextController;
-import org.jglue.cdiunit.InRequestScope;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,6 +24,17 @@ public class DbTest {
 
 	@Inject Db db;
 	@Inject Jpa jpa;
+	@Inject ContextController ctx;
+	
+	@Before
+	public void setUp() {
+		ctx.openRequest();
+	}
+	
+	@After
+	public void tearDown() {
+		ctx.closeRequest();
+	}
 	
 	@Test
 	public void shouldInjectJpa() {
@@ -36,40 +48,57 @@ public class DbTest {
 	
 	@Test(expected = RuntimeException.class)
 	public void shouldEvictOpenRequest() throws Exception {
+		ctx.closeRequest();
+		
 		db.withoutImplicitRequest().init(Model.class);
 		db.ctx().currentRequest();
 	}
 	
-	@Test @InRequestScope
+	@Test
 	public void shouldOpenRequest() throws Exception {
 		db.withoutImplicitRequest().init(Model.class);
 		db.ctx().currentRequest();
 	}
 	
-	@SuppressWarnings("rawtypes")
-	@Test @InRequestScope
+	@Test
 	public void shouldGenerateDataByModelNameAndDataSource() throws Exception {
 		db.withoutImplicitRequest().init(Model.class);
 		
 		Query query = jpa.em().createQuery("FROM Model");
-		List list = query.getResultList();
+		List<?> list = query.getResultList();
 		assertThat(list.size(), equalTo(2));
 	}
 	
-	@SuppressWarnings("rawtypes")
-	@Test @InRequestScope
+	@Test
 	public void shouldCleanDataBase() throws Exception {
 		db.withoutImplicitRequest().init(Model.class);
 		
 		EntityManager em = jpa.em();
 		Query query = em.createQuery("FROM Model");
-		List list = query.getResultList();
+		List<?> list = query.getResultList();
 		assertThat(list.size(), equalTo(2));
 		
 		db.clean();
 		query = em.createQuery("FROM Model");
 		list = query.getResultList();
 		assertThat(list.size(), equalTo(0));
+	}
+	
+	@Test
+	public void shouldEscapeCleanIfIsRollbackOnly() throws Exception {
+		db.withoutImplicitRequest().init(Model.class);
+		
+		EntityManager em = jpa.em();
+		Query query = em.createQuery("FROM Model");
+		List<?> list = query.getResultList();
+		assertThat(list.size(), equalTo(2));
+		
+		jpa.beginTransaction().setRollbackOnly();
+		
+		db.clean();
+		query = em.createQuery("FROM Model");
+		list = query.getResultList();
+		assertThat(list.size(), equalTo(2));
 	}
 	
 }

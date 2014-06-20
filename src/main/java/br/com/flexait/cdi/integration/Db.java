@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -45,11 +46,18 @@ public class Db {
 	}
 	
 	public void clean() throws Exception {
-		DatabaseOperation.DELETE_ALL.execute(connection, dataSet);
+		if(isNotRollbackOnly()) {
+			DatabaseOperation.DELETE_ALL.execute(connection, dataSet);
+		}
 		
 		if(implicitRequest) {
 			ctx.closeRequest();
 		}
+	}
+
+	private boolean isNotRollbackOnly() {
+		EntityManager em = jpa.em();
+		return !em.isJoinedToTransaction() || !em.getTransaction().getRollbackOnly();
 	}
 	
 	@SuppressWarnings("rawtypes")

@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
 import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.ContextController;
@@ -16,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import br.com.flexait.cdi.integration.Jpa;
+import br.com.flexait.cdi.model.Model;
 
 @RunWith(CdiRunner.class)
 public class JpaTest {
@@ -47,41 +48,8 @@ public class JpaTest {
 	
 	@Test
 	public void shouldOpenTransaction() {
-		jpa.begin();
+		jpa.beginTransaction();
 		assertThat(jpa.em().isJoinedToTransaction(), equalTo(true));
-	}
-	
-	@Test
-	public void shouldCommitTransaction() {
-		jpa.begin();
-		assertThat(jpa.em().getTransaction().isActive(), equalTo(true));
-		
-		jpa.commit();		
-		assertThat(jpa.em().getTransaction().isActive(), equalTo(false));
-	}
-	
-	@Test
-	public void shouldRollbackTransaction() {
-		jpa.begin();
-		assertThat(jpa.em().getTransaction().isActive(), equalTo(true));
-		
-		jpa.rollback();		
-		assertThat(jpa.em().getTransaction().isActive(), equalTo(false));
-	}
-	
-	@Test
-	public void shouldReturnTrueIfTransactionIsActive() {
-		jpa.begin();
-		
-		assertThat(jpa.isActive(), equalTo(true));
-	}
-	
-	@Test
-	public void shouldReturnFalseIfTransactionIsActive() {
-		jpa.begin();
-		jpa.commit();
-		
-		assertThat(jpa.isActive(), equalTo(false));
 	}
 	
 	@Test
@@ -102,6 +70,35 @@ public class JpaTest {
 		
 		assertThat(conn.isClosed(), equalTo(false));
 		conn.close();
+	}
+	
+	@Test
+	public void shouldCommitOnDestroy() {
+		jpa.beginTransaction();
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(true));
+		
+		jpa.destroy();
+			
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(false));
+	}
+	
+	@Test
+	public void shouldRollbackOnCommitErrorOnDestroy() {
+		EntityTransaction tx = jpa.beginTransaction();
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(true));
+		
+		jpa.em().merge(new Model());
+		tx.commit();
+		jpa.destroy();
+		
+		assertThat(jpa.em().getTransaction().isActive(), equalTo(false));
+	}
+	
+	@Test
+	public void shouldReturnTransactionActive() {
+		EntityTransaction tx = jpa.beginTransaction();
+		assertThat(tx.isActive(), equalTo(true));
+		tx.rollback();
 	}
 	
 }

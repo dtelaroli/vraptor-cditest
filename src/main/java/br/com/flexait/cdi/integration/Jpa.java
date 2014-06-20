@@ -3,6 +3,7 @@ package br.com.flexait.cdi.integration;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -32,24 +33,12 @@ public class Jpa {
 		return em;
 	}
 
-	public EntityManager begin() {
+	public EntityTransaction beginTransaction() {
 		if(tx == null) {
 			tx = em().getTransaction();
 		}
 		tx.begin();
-		return em();
-	}
-
-	public void commit() {
-		tx.commit();	
-	}
-
-	public void rollback() {
-		tx.rollback();
-	}
-
-	public boolean isActive() {
-		return tx.isActive();
+		return tx;
 	}
 
 	public boolean isOpen() {
@@ -68,6 +57,13 @@ public class Jpa {
 				conn = connection;				
 			}
 		});
+	}
+
+	@PreDestroy
+	public void destroy() {
+		if(tx != null && tx.isActive()) {
+			tx.rollback();
+		}
 	}
 
 }
